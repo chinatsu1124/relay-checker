@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中转站可用性检测器</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="logo">✓</div>
+      <div class="title-wrap">
+        <div class="title">中转站可用性检测器</div>
+        <div class="sub">浏览器本地直连 · 模型列表 / 连通性 / 额度 · key 不经任何服务器</div>
+      </div>
+    </header>
+
+    <!-- 输入区 -->
+    <section class="input-card">
+      <div class="field-row">
+        <label class="lbl">Base URL</label>
+        <input id="f-url" class="field" type="text" placeholder="https://api.example.com（不带 /v1）" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="field-row">
+        <label class="lbl">API Key</label>
+        <div class="key-wrap">
+          <input id="f-key" class="field" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+          <button id="btn-eye" class="btn-ghost" type="button" title="显示/隐藏">显示</button>
+        </div>
+      </div>
+      <div class="input-actions">
+        <button id="btn-detect" class="btn-primary" type="button">检测</button>
+        <label class="remember">
+          <input id="f-remember" type="checkbox" />
+          <span>记住到本地（localStorage，仅存本浏览器，公共电脑勿勾）</span>
+        </label>
+      </div>
+      <div id="detect-status" class="detect" hidden></div>
+    </section>
+
+    <!-- 结果区 -->
+    <main id="results" class="results" hidden>
+      <!-- 额度卡 -->
+      <section id="quota-card" class="card quota-card">
+        <div class="card-top">
+          <span id="quota-dot" class="dot err"></span>
+          <span class="card-name">额度</span>
+          <span id="quota-pct" class="pct err">…</span>
+        </div>
+        <div class="bar-track"><div id="quota-bar" class="bar-fill" style="width:0%"></div></div>
+        <div class="card-bottom">
+          <span id="quota-used" class="used">查询中…</span>
+          <span id="quota-remain" class="remain"></span>
+        </div>
+        <div id="quota-err" class="card-err" hidden></div>
+      </section>
+
+      <!-- 模型列表 -->
+      <section class="card models-card">
+        <div class="models-head">
+          <span class="card-name">模型 <span id="models-count" class="count"></span></span>
+          <div class="models-tools">
+            <input id="f-search" class="field-sm" type="text" placeholder="搜索模型…" />
+            <select id="f-filter" class="field-sm">
+              <option value="all">全部状态</option>
+              <option value="ok">仅连通</option>
+              <option value="fail">仅失败</option>
+              <option value="untested">仅未测</option>
+            </select>
+            <select id="f-sort" class="field-sm">
+              <option value="name">按名称</option>
+              <option value="latency">按延迟</option>
+              <option value="status">按状态</option>
+            </select>
+          </div>
+        </div>
+        <div class="models-actions">
+          <button id="btn-test-all" class="btn-ghost" type="button">测试全部</button>
+          <button id="btn-stop" class="btn-ghost" type="button" hidden>停止</button>
+          <span id="test-progress" class="progress"></span>
+        </div>
+        <div id="models-list" class="models-list"></div>
+        <div id="models-err" class="card-err" hidden></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>所有请求均在你的浏览器内发出，key 不上传 ·
+        <a href="https://github.com" id="src-link" target="_blank" rel="noopener">纯静态 · 可部署任意 Pages</a>
+      </span>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
