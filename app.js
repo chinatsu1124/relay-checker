@@ -59,6 +59,12 @@ const collapsed = new Set(); // 折叠的供应商 key
 // 结果归类：连通 / 站可达但模型有问题(4xx) / 不通(网络·CORS·5xx)
 function classify(r) {
   if (r.ok) return "ok";
+  // 推理型模型在极小输出预算下「没说完就到上限」——这恰恰证明已连通、模型已执行，
+  // 只是被探活请求的 max_tokens 卡住，按连通处理。
+  const msg = (r.error || "").toLowerCase();
+  if (r.status === 400 && /max_tokens|max_completion_tokens|output limit|could not finish|finish_reason/.test(msg)) {
+    return "ok";
+  }
   if (typeof r.status === "number" && r.status >= 400 && r.status < 500) return "warn";
   return "fail";
 }

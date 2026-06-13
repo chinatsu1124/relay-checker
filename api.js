@@ -134,9 +134,11 @@ export async function testModel(baseUrl, apiKey, model, { signal } = {}) {
       headers: authHeaders(apiKey),
       signal,
       body: JSON.stringify({
+        // 极短探活请求。max_tokens 给 16（而非 1）：推理型模型会先消耗预算做
+        // 推理，给 1 会「还没输出就到顶」而 400 报错，给 16 仍极短、几乎无成本。
         model,
         messages: [{ role: "user", content: "Hi" }],
-        max_tokens: 1,
+        max_tokens: 16,
         stream: false,
       }),
     });
