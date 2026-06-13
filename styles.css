@@ -160,8 +160,8 @@ body {
 .mrow.fail  .m-dot { background: var(--red); }
 .mrow.warn  .m-dot { background: var(--amber); }
 .mrow.testing .m-dot { background: var(--accent); animation: pulse 1s infinite; }
-.m-id { font-family: var(--mono); font-size: 13px; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.m-status { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+.m-id { font-family: var(--mono); font-size: 13px; color: var(--text); flex: 1 1 auto; min-width: 5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-status { font-family: var(--mono); font-size: 12px; white-space: nowrap; flex: 0 1 auto; min-width: 0; max-width: 50%; overflow: hidden; text-overflow: ellipsis; }
 .m-status.ok { color: var(--green); }
 .m-status.fail { color: var(--red); }
 .m-status.warn { color: var(--amber); }

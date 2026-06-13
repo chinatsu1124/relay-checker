@@ -134,9 +134,10 @@ function statusHtml(m) {
   if (m.state === "testing") return `<span class="m-status testing">测试中…</span>`;
   if (m.state === "warn") {
     const s = m.status ? `${m.status} ` : "";
-    return `<span class="m-status warn">⚠ ${esc(s)}<span class="m-err">${esc(m.error || "")}</span></span>`;
+    const full = `${s}${m.error || ""}`.trim();
+    return `<span class="m-status warn" title="${esc(full)}">⚠ ${esc(s)}<span class="m-err">${esc(m.error || "")}</span></span>`;
   }
-  if (m.state === "fail") return `<span class="m-status fail">✗ <span class="m-err">${esc(m.error || "")}</span></span>`;
+  if (m.state === "fail") return `<span class="m-status fail" title="${esc(m.error || "")}">✗ <span class="m-err">${esc(m.error || "")}</span></span>`;
   return `<span class="m-status untested">未测</span>`;
 }
 
