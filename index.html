@@ -3,92 +3,110 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>中转站可用性检测器</title>
+  <title>中转探针 · RELAY PROBE</title>
+  <meta name="description" content="浏览器本地直连检测中转站：可用模型 / 连通性延迟 / 额度。按供应商分组。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="page">
-    <header class="header">
-      <div class="logo">✓</div>
-      <div class="title-wrap">
-        <div class="title">中转站可用性检测器</div>
-        <div class="sub">浏览器本地直连 · 模型列表 / 连通性 / 额度 · key 不经任何服务器</div>
+  <div class="scape"></div>
+
+  <div class="wrap">
+    <!-- 头部 -->
+    <header class="masthead reveal" style="--d:0">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <div class="brand-text">
+          <h1>中转探针<span class="latin">RELAY&nbsp;PROBE</span></h1>
+          <p>浏览器本地直连 · 模型连通性 / 延迟 / 额度诊断</p>
+        </div>
       </div>
+      <div class="masthead-live"><span class="pulse"></span>LOCAL · NO BACKEND</div>
     </header>
 
-    <!-- 输入区 -->
-    <section class="input-card">
-      <div class="field-row">
-        <label class="lbl">Base URL</label>
-        <input id="f-url" class="field" type="text" placeholder="https://api.example.com（不带 /v1）" autocomplete="off" spellcheck="false" />
+    <!-- 连接控制台 -->
+    <section class="console reveal" style="--d:1">
+      <div class="console-grid">
+        <label class="cfield">
+          <span class="cfield-tag">BASE&nbsp;URL</span>
+          <input id="f-url" class="cinput" type="text" placeholder="https://api.example.com" autocomplete="off" spellcheck="false" />
+        </label>
+        <label class="cfield">
+          <span class="cfield-tag">API&nbsp;KEY</span>
+          <span class="key-wrap">
+            <input id="f-key" class="cinput" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+            <button id="btn-eye" class="eye" type="button" title="显示 / 隐藏">显示</button>
+          </span>
+        </label>
+        <button id="btn-detect" class="scan" type="button">
+          <span class="scan-zh">检&nbsp;测</span>
+          <span class="scan-en">SCAN</span>
+        </button>
       </div>
-      <div class="field-row">
-        <label class="lbl">API Key</label>
-        <div class="key-wrap">
-          <input id="f-key" class="field" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false" />
-          <button id="btn-eye" class="btn-ghost" type="button" title="显示/隐藏">显示</button>
-        </div>
-      </div>
-      <div class="input-actions">
-        <button id="btn-detect" class="btn-primary" type="button">检测</button>
+      <div class="console-foot">
         <label class="remember">
           <input id="f-remember" type="checkbox" />
-          <span>记住到本地（localStorage，仅存本浏览器，公共电脑勿勾）</span>
+          <span>记住到本地 <em>localStorage · 仅本浏览器，公共电脑勿勾</em></span>
         </label>
+        <div id="detect-status" class="readout" hidden></div>
       </div>
-      <div id="detect-status" class="detect" hidden></div>
     </section>
 
-    <!-- 结果区 -->
+    <!-- 结果 -->
     <main id="results" class="results" hidden>
-      <!-- 额度卡 -->
-      <section id="quota-card" class="card quota-card">
-        <div class="card-top">
-          <span id="quota-dot" class="dot err"></span>
-          <span class="card-name">额度</span>
-          <span id="quota-pct" class="pct err">…</span>
+      <!-- 额度 -->
+      <section id="quota-panel" class="panel quota reveal" style="--d:2" data-level="">
+        <div class="panel-tab">额度 <span class="tab-en">QUOTA</span></div>
+        <div class="quota-body">
+          <div class="quota-head">
+            <div class="q-remain">
+              <span id="quota-remain-val">$—</span>
+              <small>剩余可用</small>
+            </div>
+            <div id="quota-pct" class="q-pct">—</div>
+          </div>
+          <div class="meter"><div id="quota-bar" class="meter-fill" style="width:0%"></div></div>
+          <div id="quota-used" class="q-used">查询中…</div>
+          <div id="quota-err" class="err" hidden></div>
         </div>
-        <div class="bar-track"><div id="quota-bar" class="bar-fill" style="width:0%"></div></div>
-        <div class="card-bottom">
-          <span id="quota-used" class="used">查询中…</span>
-          <span id="quota-remain" class="remain"></span>
-        </div>
-        <div id="quota-err" class="card-err" hidden></div>
       </section>
 
-      <!-- 模型列表 -->
-      <section class="card models-card">
-        <div class="models-head">
-          <span class="card-name">模型 <span id="models-count" class="count"></span></span>
-          <div class="models-tools">
-            <input id="f-search" class="field-sm" type="text" placeholder="搜索模型…" />
-            <select id="f-filter" class="field-sm">
-              <option value="all">全部状态</option>
-              <option value="ok">仅连通</option>
-              <option value="fail">仅失败</option>
-              <option value="untested">仅未测</option>
-            </select>
-            <select id="f-sort" class="field-sm">
-              <option value="name">按名称</option>
-              <option value="latency">按延迟</option>
-              <option value="status">按状态</option>
-            </select>
+      <!-- 模型 -->
+      <section class="panel models reveal" style="--d:3">
+        <div class="panel-tab">模型 <span class="tab-en">MODELS</span><span id="models-count" class="tab-count"></span></div>
+
+        <div class="toolbar">
+          <div class="search">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="f-search" type="text" placeholder="搜索模型 id…" />
+          </div>
+          <select id="f-filter" class="sel" title="状态筛选">
+            <option value="all">全部状态</option>
+            <option value="ok">仅连通</option>
+            <option value="fail">仅失败</option>
+            <option value="untested">仅未测</option>
+          </select>
+          <select id="f-sort" class="sel" title="排序">
+            <option value="name">按名称</option>
+            <option value="latency">按延迟</option>
+            <option value="status">按状态</option>
+          </select>
+          <div class="toolbar-go">
+            <button id="btn-test-all" class="btn-go" type="button">测试全部</button>
+            <button id="btn-stop" class="btn-stop" type="button" hidden>停止</button>
+            <span id="test-progress" class="prog"></span>
           </div>
         </div>
-        <div class="models-actions">
-          <button id="btn-test-all" class="btn-ghost" type="button">测试全部</button>
-          <button id="btn-stop" class="btn-ghost" type="button" hidden>停止</button>
-          <span id="test-progress" class="progress"></span>
-        </div>
-        <div id="models-list" class="models-list"></div>
-        <div id="models-err" class="card-err" hidden></div>
+
+        <div id="models-err" class="err" hidden></div>
+        <div id="models-list" class="channels"></div>
       </section>
     </main>
 
-    <footer class="footer">
-      <span>所有请求均在你的浏览器内发出，key 不上传 ·
-        <a href="https://github.com" id="src-link" target="_blank" rel="noopener">纯静态 · 可部署任意 Pages</a>
-      </span>
+    <footer class="foot reveal" style="--d:4">
+      所有请求均在你的浏览器内发出，API Key 不上传任何服务器 · 纯静态
     </footer>
   </div>
 

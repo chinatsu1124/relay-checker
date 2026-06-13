@@ -12,10 +12,11 @@
 
 1. 打开页面，填入 Base URL（如 `https://api.example.com`，**不带** `/v1`）和 API Key。
 2. 点 **检测**：显示站点类型（one-api / new-api）、额度卡、模型列表。
-3. 模型列表里：
+3. 模型列表里（**按供应商自动分组**，如 OpenAI / Anthropic / DeepSeek / 智谱 GLM / 通义千问…，每组可点标题折叠）：
    - 点单行 **测试** 探活该模型；
+   - 点某组的 **测试该组** 只测该供应商的全部模型；
    - 点 **测试全部** 批量探活（默认 5 路并发，可随时 **停止**）；
-   - 用搜索框过滤、用下拉按状态/延迟排序。
+   - 用搜索框过滤、用下拉按状态/延迟排序；组标题右侧显示该组 `总数 · ✓通 ⚠告警 ✗失败` 统计。
 4. **记住到本地**（可选）：勾选后把 Base URL / Key 存进浏览器 `localStorage`（仅本机本浏览器）。公共电脑请勿勾选。
 
 ### 模型状态含义
@@ -66,10 +67,10 @@ python3 -m http.server 8080
 
 ```
 relay-checker/
-├── index.html   # 单页结构
-├── styles.css   # 样式（深浅色跟随系统）
+├── index.html   # 单页结构（暗色「诊断仪表台」UI）
+├── styles.css   # 样式：Chakra Petch + JetBrains Mono，青绿信号主色，网格/噪点底纹
 ├── api.js       # fetch 层：detectStation / listModels / testModel / fetchQuota
-├── app.js       # UI 逻辑：检测、渲染、并发测试、localStorage
+├── app.js       # UI 逻辑：检测、供应商分组渲染、分组/并发测试、localStorage
 └── README.md
 ```
 
@@ -77,4 +78,4 @@ relay-checker/
 
 - Key 仅用于直接请求你填的中转站，不发往别处。
 - 「记住」功能存的是浏览器本地 `localStorage`，可随时取消勾选清除。
-- 本项目无任何分析/埋点/第三方脚本。
+- 无任何分析 / 埋点脚本。界面字体引用 Google Fonts（仅样式与字体文件，非追踪脚本）；介意可改 `index.html` 顶部的 `<link>` 改用系统字体。
